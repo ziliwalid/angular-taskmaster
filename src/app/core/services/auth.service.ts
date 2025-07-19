@@ -4,8 +4,8 @@ import { BehaviorSubject, Observable, throwError, timer } from 'rxjs';
 import { map, catchError, tap, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
-import { User, LoginCredentials, RegisterData, AuthResponse } from '../models/user.model';
-import { ApiResponse } from '../models/api-response.model';
+import { User, LoginCredentials, RegisterData } from '../models/user.model';
+import { ApiResponse, AuthResponse } from '../models/api-response.model';
 
 @Injectable({
   providedIn: 'root'
