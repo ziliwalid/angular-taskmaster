@@ -4,10 +4,10 @@ import { Routes } from '@angular/router';
 export const taskRoutes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./task-list/task-list.component').then(c => c.TaskListComponent)
+    loadComponent: () => import('./task-list/task-list').then(c => c.TaskList)
   },
   {
     path: ':id',
-    loadComponent: () => import('./task-detail/task-detail.component').then(c => c.TaskDetailComponent)
+    loadComponent: () => import('./task-detail/task-detail').then(c => c.TaskDetail)
   }
 ];
