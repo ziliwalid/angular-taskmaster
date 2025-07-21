@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError, timer } from 'rxjs';
 import { map, catchError, tap, switchMap } from 'rxjs/operators';
@@ -24,18 +25,27 @@ export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
+  private isBrowser: boolean;
+
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    @Inject(PLATFORM_ID) platformId: Object
   ) {
-    this.initializeAuthState();
-    this.startTokenRefreshTimer();
+    this.isBrowser = isPlatformBrowser(platformId);
+    
+    if (this.isBrowser) {
+      this.initializeAuthState();
+      this.startTokenRefreshTimer();
+    }
   }
 
   /**
    * Initialise l'état d'authentification au démarrage
    */
   private initializeAuthState(): void {
+    if (!this.isBrowser) return;
+    
     const storedUser = localStorage.getItem(this.USER_KEY);
     const token = localStorage.getItem(this.TOKEN_KEY);
 
@@ -96,6 +106,10 @@ export class AuthService {
    * Rafraîchissement du token
    */
   refreshToken(): Observable<string> {
+    if (!this.isBrowser) {
+      return throwError(() => new Error('Cannot refresh token on server'));
+    }
+
     const refreshToken = localStorage.getItem(this.REFRESH_TOKEN_KEY);
     
     if (!refreshToken) {
@@ -108,7 +122,9 @@ export class AuthService {
     }).pipe(
       map(response => response.data),
       tap(tokenData => {
-        localStorage.setItem(this.TOKEN_KEY, tokenData.token);
+        if (this.isBrowser) {
+          localStorage.setItem(this.TOKEN_KEY, tokenData.token);
+        }
       }),
       map(tokenData => tokenData.token),
       catchError(error => {
@@ -130,6 +146,7 @@ export class AuthService {
    * Récupère le token actuel
    */
   getToken(): string | null {
+    if (!this.isBrowser) return null;
     return localStorage.getItem(this.TOKEN_KEY);
   }
 
@@ -150,6 +167,8 @@ export class AuthService {
    * Stocke les données d'authentification
    */
   private storeAuthData(authData: AuthResponse): void {
+    if (!this.isBrowser) return;
+    
     localStorage.setItem(this.TOKEN_KEY, authData.token);
     localStorage.setItem(this.REFRESH_TOKEN_KEY, authData.refreshToken);
     localStorage.setItem(this.USER_KEY, JSON.stringify(authData.user));
@@ -167,6 +186,8 @@ export class AuthService {
    * Supprime toutes les données d'authentification
    */
   private clearAuthData(): void {
+    if (!this.isBrowser) return;
+    
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
@@ -176,6 +197,8 @@ export class AuthService {
    * Démarre le timer de rafraîchissement automatique du token
    */
   private startTokenRefreshTimer(): void {
+    if (!this.isBrowser) return;
+    
     timer(0, 300000) // Vérification toutes les 5 minutes
       .pipe(
         switchMap(() => {

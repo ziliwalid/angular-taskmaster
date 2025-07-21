@@ -1,1 +1,91 @@
-<p>login works!</p>
+<div class="login-container">
+  <div class="login-card">
+    <!-- Header -->
+    <div class="login-header">
+      <h1>📋 TaskMaster</h1>
+      <p>Connectez-vous à votre compte</p>
+    </div>
+
+    <!-- Demo Credentials Info -->
+    <div class="demo-info">
+      <h4>🔑 Identifiants de démonstration :</h4>
+      <p><strong>Email:</strong> admin&#64;taskmaster.com</p>
+      <p><strong>Mot de passe:</strong> password</p>
+    </div>
+
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="form-control"
+          [class.error]="isFieldInvalid('email')"
+          placeholder="votre@email.com"
+          autocomplete="email"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('email')">
+          {{ getFieldError('email') }}
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          class="form-control"
+          [class.error]="isFieldInvalid('password')"
+          placeholder="Votre mot de passe"
+          autocomplete="current-password"
+        />
+        <div class="error-message" *ngIf="isFieldInvalid('password')">
+          {{ getFieldError('password') }}
+        </div>
+      </div>
+
+      <!-- Remember Me -->
+      <div class="form-group checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="rememberMe" />
+          <span class="checkmark"></span>
+          Se souvenir de moi
+        </label>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="login-btn"
+        [disabled]="isLoading"
+        [class.loading]="isLoading"
+      >
+        @if (isLoading) {
+          <span class="spinner"></span>
+          Connexion...
+        } @else {
+          Se connecter
+        }
+      </button>
+    </form>
+
+    <!-- Links -->
+    <div class="login-links">
+      <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+      <div class="register-link">
+        Pas encore de compte ? 
+        <a routerLink="/auth/register">S'inscrire</a>
+      </div>
+    </div>
+  </div>
+</div>

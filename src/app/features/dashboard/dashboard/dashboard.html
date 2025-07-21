@@ -1,1 +1,119 @@
-<p>dashboard works!</p>
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1>📊 Tableau de Bord</h1>
+    <p>Bienvenue dans TaskMaster ! Voici un aperçu de vos tâches.</p>
+  </div>
+
+  <!-- Navigation Quick Links -->
+  <div class="quick-nav">
+    <a routerLink="/tasks" class="nav-card tasks">
+      <div class="icon">📋</div>
+      <h3>Mes Tâches</h3>
+      <p>Gérer toutes vos tâches</p>
+    </a>
+    <a routerLink="/auth/login" class="nav-card auth">
+      <div class="icon">🔐</div>
+      <h3>Connexion</h3>
+      <p>Retour à la connexion</p>
+    </a>
+    <a routerLink="/users" class="nav-card users">
+      <div class="icon">👥</div>
+      <h3>Utilisateurs</h3>
+      <p>Gérer les utilisateurs</p>
+    </a>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card total">
+      <div class="stat-icon">📊</div>
+      <div class="stat-content">
+        <h3>{{ stats.totalTasks }}</h3>
+        <p>Total des tâches</p>
+      </div>
+    </div>
+
+    <div class="stat-card completed">
+      <div class="stat-icon">✅</div>
+      <div class="stat-content">
+        <h3>{{ stats.completedTasks }}</h3>
+        <p>Tâches terminées</p>
+      </div>
+    </div>
+
+    <div class="stat-card pending">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-content">
+        <h3>{{ stats.pendingTasks }}</h3>
+        <p>En attente</p>
+      </div>
+    </div>
+
+    <div class="stat-card today">
+      <div class="stat-icon">🗓️</div>
+      <div class="stat-content">
+        <h3>{{ stats.todayTasks }}</h3>
+        <p>Prévues aujourd'hui</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Tasks -->
+  <div class="recent-tasks">
+    <div class="section-header">
+      <h2>🕒 Tâches Récentes</h2>
+      <a routerLink="/tasks" class="view-all-btn">Voir toutes</a>
+    </div>
+
+    <div class="tasks-list">
+      <div 
+        class="task-item" 
+        *ngFor="let task of recentTasks"
+        [routerLink]="['/tasks', task.id]">
+        
+        <div class="task-content">
+          <h4>{{ task.title }}</h4>
+          <div class="task-meta">
+            <span class="status-badge" [class]="getTaskStatusClass(task.status)">
+              @if (task.status === 'completed') {
+                ✅ Terminé
+              } @else if (task.status === 'in-progress') {
+                🔄 En cours
+              } @else {
+                📋 À faire
+              }
+            </span>
+            <span class="priority-badge" [class]="getPriorityClass(task.priority)">
+              @if (task.priority === 'high') {
+                🔴 Haute
+              } @else if (task.priority === 'medium') {
+                🟡 Moyenne
+              } @else {
+                🟢 Basse
+              }
+            </span>
+          </div>
+        </div>
+
+        <div class="task-arrow">→</div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-tasks" *ngIf="recentTasks.length === 0">
+      <div class="empty-icon">📝</div>
+      <h3>Aucune tâche récente</h3>
+      <p>Commencez par créer votre première tâche !</p>
+      <a routerLink="/tasks" class="create-task-btn">Créer une tâche</a>
+    </div>
+  </div>
+
+  <!-- Success Message -->
+  <div class="success-banner">
+    <div class="banner-content">
+      <h3>🎉 Félicitations !</h3>
+      <p>Votre application TaskMaster fonctionne parfaitement. Vous pouvez maintenant naviguer entre les différentes sections.</p>
+    </div>
+  </div>
+</div>

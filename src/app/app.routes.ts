@@ -10,17 +10,17 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.dashboardRoutes),
-    canActivate: [AuthGuard]
+   //canActivate: [AuthGuard]
   },
   {
     path: 'tasks',
     loadChildren: () => import('./features/tasks/tasks.routes').then(m => m.taskRoutes),
-    canActivate: [AuthGuard]
+    //canActivate: [AuthGuard]
   },
   {
     path: 'users',  // 👈 La route oubliée !
     loadChildren: () => import('./features/users/users.routes').then(m => m.userRoutes),
-    canActivate: [AuthGuard],
+    //canActivate: [AuthGuard],
     data: { roles: ['admin', 'manager'] }  // Seuls admin/manager peuvent gérer les users
   },
   { path: '**', redirectTo: '/auth/login' }
